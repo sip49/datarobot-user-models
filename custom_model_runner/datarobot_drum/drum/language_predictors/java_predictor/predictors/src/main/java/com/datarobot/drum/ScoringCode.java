@@ -4,6 +4,8 @@ import com.datarobot.prediction.IClassificationPredictor;
 import com.datarobot.prediction.IPredictorInfo;
 import com.datarobot.prediction.IRegressionPredictor;
 import com.datarobot.prediction.Predictors;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -29,7 +31,7 @@ public class ScoringCode extends BasePredictor {
         var urls = new ArrayList<URL>();
         for (var file : Paths.get(modelDir).toFile().listFiles()) {
             if (file.isFile() && file.getName().toLowerCase().endsWith(".jar")) {
-                urls.add(new URL("file://" + file.getCanonicalPath()));
+                urls.add(Urls.create("file://" + file.getCanonicalPath(), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
             }
         }
         var urlClassLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
